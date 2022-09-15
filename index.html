@@ -7,6 +7,12 @@
   <title>Document</title>
 </head>
 <body>
-
+  <div id="game"></div>
+  <script type="module">
+    import init, { getGame } from "./pkg/MineSweeper.js";
+    init().then(() => {
+      console.log(getGame());
+    });
+  </script>
 </body>
 </html>

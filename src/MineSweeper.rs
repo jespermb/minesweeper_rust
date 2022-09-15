@@ -12,7 +12,7 @@ enum OpenResult {
 }
 
 #[derive(Debug)]
-struct MineSweeper {
+pub struct MineSweeper {
     width: usize,
     height: usize,
     open_cells: Vec<Position>,
@@ -119,7 +119,7 @@ impl MineSweeper {
 
 #[cfg(test)]
 mod test {
-    use crate::MineSweeper::MineSweeper;
+    use crate::minesweeper::MineSweeper;
 
     #[test]
     fn test_new_game() {
