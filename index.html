@@ -5,14 +5,61 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Document</title>
+  <style>
+    #game {
+      display: grid;
+      align-items: center;
+      justify-items: center;
+    }
+    .game-board {
+      display: grid;
+      grid-gap: 0.5rem;
+    }
+
+    .field {
+      text-decoration: none;
+      text-align: center;
+    }
+  </style>
 </head>
 <body>
   <div id="game"></div>
   <script type="module">
-    import init, { getGame } from "./pkg/MineSweeper.js";
+    import init, { getGame, openCell } from "./pkg/MineSweeper.js";
     init().then(() => {
-      console.log(getGame());
+      render(getGame());
     });
+
+    function render(state) {
+      console.log(state)
+      let root = document.getElementById("game");
+      root.innerHTML = "";
+
+      root.innerHtml = "";
+      let gameElement = document.createElement("div");
+      gameElement.classList.add("game-board");
+      root.appendChild(gameElement);
+      let data = state.split("\n").map((row) => row.trim().split(/\s+/));
+
+      gameElement.style.gridTemplate = `repeat(${data.length}, 1fr) / repeat(${data[0].length}, 1fr)`;
+
+      for (let y = 0; y < data.length; y++) {
+        for (let x = 0; x < data[y].length; x++) {
+          let element = document.createElement("a");
+          element.classList.add("cell");
+          element.href = "#";
+          element.innerText = data[y][x];
+
+          element.addEventListener('click', (e) => {
+            e.preventDefault();
+            render(openCell(x, y));
+          });
+
+          gameElement.appendChild(element);
+        }
+
+      }
+    }
   </script>
 </body>
 </html>

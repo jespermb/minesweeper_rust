@@ -5,7 +5,7 @@ use crate::random::random_number;
 
 type Position = (usize, usize);
 
-enum OpenResult {
+pub enum OpenResult {
     Mine,
     NoMine(u8),
     Flagged,
