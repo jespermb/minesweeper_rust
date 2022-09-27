@@ -25,7 +25,7 @@
 <body>
   <div id="game"></div>
   <script type="module">
-    import init, { getGame, openCell } from "./pkg/MineSweeper.js";
+    import init, { getGame, openCell, toggleFlag } from "./pkg/MineSweeper.js";
     init().then(() => {
       render(getGame());
     });
@@ -54,6 +54,11 @@
             e.preventDefault();
             render(openCell(x, y));
           });
+          element.addEventListener('contextmenu', function(ev) {
+            ev.preventDefault();
+            render(toggleFlag(x, y));
+            return false;
+          }, false);
 
           gameElement.appendChild(element);
         }

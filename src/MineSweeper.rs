@@ -1,4 +1,3 @@
-use std::ops::Index;
 use std::fmt::{Display, Write};
 
 use crate::random::random_number;
@@ -92,8 +91,8 @@ impl MineSweeper {
         let width = self.width;
         let height = self.height;
 
-        (x.min(1) - 1..=(x + 1).max(width - 1)).flat_map(move |i| (
-                y.min(1) - 1..=(y + 1).max(height - 1)).map(move |j| (i, j)
+        (x.max(1) - 1..=(x + 1).min(width - 1)).flat_map(move |i| (
+                y.max(1) - 1..=(y + 1).min(height - 1)).map(move |j| (i, j)
         )).filter(move |&pos| pos != (x, y))
     }
 
@@ -127,6 +126,8 @@ mod test {
         ms.open_cell((5, 5));
         ms.toggle_flag((6, 6));
         ms.open_cell((6, 6));
+        ms.open_cell((1, 1));
+        ms.open_cell((10, 10));
 
         println!("{}", ms);
     }
