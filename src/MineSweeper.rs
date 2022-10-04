@@ -75,18 +75,26 @@ impl MineSweeper {
         }
     }
 
-    pub fn open_cell(&mut self, position: Position) -> OpenResult{
+    pub fn open_cell(&mut self, position: Position) -> Option<OpenResult> {
         if self.lost || self.flagged_cells.contains(&position) {
-            return OpenResult::Flagged;
+            return None;
         }
         self.open_cells.push(position);
 
         let is_mine = self.mines.contains(&position);
         if is_mine {
             self.lost = true;
-            OpenResult::Mine
+            Some(OpenResult::Mine)
         } else {
-            OpenResult::NoMine(8)
+            let mine_count = self.neighbor_mines(position);
+            if mine_count == 0 {
+                for neightbor in self.neighbors(position) {
+                    if !self.open_cells.contains(&neightbor) {
+                        self.open_cell(neightbor);
+                    }
+                }
+            }
+            Some(OpenResult::NoMine(mine_count))
         }
     }
 
