@@ -17,6 +17,7 @@ pub struct MineSweeper {
     open_cells: Vec<Position>,
     mines: Vec<Position>,
     flagged_cells: Vec<Position>,
+    lost: bool,
 }
 
 impl Display for MineSweeper {
@@ -70,17 +71,19 @@ impl MineSweeper {
                 mines
             },
             flagged_cells: Vec::new(),
+            lost: false,
         }
     }
 
     pub fn open_cell(&mut self, position: Position) -> OpenResult{
-        if self.flagged_cells.contains(&position) {
+        if self.lost || self.flagged_cells.contains(&position) {
             return OpenResult::Flagged;
         }
         self.open_cells.push(position);
 
         let is_mine = self.mines.contains(&position);
         if is_mine {
+            self.lost = true;
             OpenResult::Mine
         } else {
             OpenResult::NoMine(8)
@@ -104,7 +107,7 @@ impl MineSweeper {
     }
 
     pub fn toggle_flag(&mut self, pos: Position) {
-        if self.open_cells.contains(&pos) {
+        if self.lost || self.open_cells.contains(&pos) {
             return;
         }
         if self.flagged_cells.contains(&pos) {
