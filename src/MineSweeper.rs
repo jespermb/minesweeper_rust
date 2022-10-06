@@ -27,15 +27,17 @@ impl Display for MineSweeper {
                 let pos = (x, y);
 
                 if !self.open_cells.contains(&pos) {
-                    if self.flagged_cells.contains(&pos) {
+                    if self.lost && self.mines.contains(&pos) {
+                         f.write_str("💣 ")?;
+                    } else if self.flagged_cells.contains(&pos) {
                         f.write_str("🚩 ")?;
                     } else {
                         f.write_str("🟪 ")?;
                     }
                 } else if self.mines.contains(&pos) {
-                f.write_str("💣 ")?;
+                    f.write_str("💣 ")?;
                 } else {
-                let mine_count = self.neighbor_mines(pos);
+                    let mine_count = self.neighbor_mines(pos);
 
                 if mine_count > 0 {
                     write!(f, " {} ", mine_count)?;
@@ -76,6 +78,20 @@ impl MineSweeper {
     }
 
     pub fn open_cell(&mut self, position: Position) -> Option<OpenResult> {
+        if self.open_cells.contains(&position) {
+            let mine_count = self.neighbor_mines(position);
+            let flag_count = self.neighbors(position).filter(|neighbor| self.flagged_cells.contains(neighbor)).count() as u8;
+
+            if (mine_count - flag_count) == 0 {
+                for neighbor in self.neighbors(position) {
+                    if !self.flagged_cells.contains(&neighbor) && !self.open_cells.contains(&neighbor) {
+                        self.open_cell(neighbor);
+                    }
+                };
+            }
+            return None;
+        }
+
         if self.lost || self.flagged_cells.contains(&position) {
             return None;
         }
